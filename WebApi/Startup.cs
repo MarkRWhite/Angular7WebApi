@@ -22,7 +22,7 @@ namespace WebApi
 	{
 		public Startup(IConfiguration configuration)
 		{
-			Configuration = configuration;
+			this.Configuration = configuration;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -40,6 +40,8 @@ namespace WebApi
 					                                                                                             }
 				                                                                                             } );
 			services.AddDbContext<PaymentDetailContext>( options => options.UseSqlServer( this.Configuration.GetConnectionString( "DevConnection" ) ) );
+
+			services.AddCors();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +51,8 @@ namespace WebApi
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			app.UseCors( options => options.WithOrigins( "http://localhost:4200" ).AllowAnyMethod().AllowAnyHeader() );
 
 			app.UseMvc();
 		}

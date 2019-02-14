@@ -1,125 +1,139 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
-
-namespace WebApi.Controllers
+﻿namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PaymentDetailsController : ControllerBase
-    {
-        private readonly PaymentDetailContext _context;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading.Tasks;
 
-        public PaymentDetailsController(PaymentDetailContext context)
-        {
-            _context = context;
-        }
+	using Microsoft.AspNetCore.Mvc;
+	using Microsoft.EntityFrameworkCore;
 
-        // GET: api/PaymentDetails
-        [HttpGet]
-        public IEnumerable<PaymentDetail> GetPaymentDetails()
-        {
-            return _context.PaymentDetails;
-        }
+	using WebApi.Models;
 
-        // GET: api/PaymentDetails/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPaymentDetail([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+	[Route( "api/[controller]" )]
+	[ApiController]
+	public class PaymentDetailsController : ControllerBase
+	{
+		#region Fields
 
-            var paymentDetail = await _context.PaymentDetails.FindAsync(id);
+		private readonly PaymentDetailContext _context;
 
-            if (paymentDetail == null)
-            {
-                return NotFound();
-            }
+		#endregion
 
-            return Ok(paymentDetail);
-        }
+		#region Constructors
 
-        // PUT: api/PaymentDetails/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPaymentDetail([FromRoute] int id, [FromBody] PaymentDetail paymentDetail)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		public PaymentDetailsController ( PaymentDetailContext context )
+		{
+			this._context = context;
+		}
 
-            if (id != paymentDetail.PmId)
-            {
-                return BadRequest();
-            }
+		#endregion
 
-            _context.Entry(paymentDetail).State = EntityState.Modified;
+		#region API Methods
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PaymentDetailExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+		// GET: api/PaymentDetails
+		[HttpGet]
+		public IEnumerable<PaymentDetail> GetPaymentDetails ()
+		{
+			return this._context.PaymentDetails;
+		}
 
-            return NoContent();
-        }
+		// GET: api/PaymentDetails/5
+		[HttpGet( "{id}" )]
+		public async Task<IActionResult> GetPaymentDetail ( [FromRoute] int id )
+		{
+			if ( !this.ModelState.IsValid )
+			{
+				return this.BadRequest( this.ModelState );
+			}
 
-        // POST: api/PaymentDetails
-        [HttpPost]
-        public async Task<IActionResult> PostPaymentDetail([FromBody] PaymentDetail paymentDetail)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+			var paymentDetail = await this._context.PaymentDetails.FindAsync( id );
 
-            _context.PaymentDetails.Add(paymentDetail);
-            await _context.SaveChangesAsync();
+			if ( paymentDetail == null )
+			{
+				return this.NotFound();
+			}
 
-            return CreatedAtAction("GetPaymentDetail", new { id = paymentDetail.PmId }, paymentDetail);
-        }
+			return this.Ok( paymentDetail );
+		}
 
-        // DELETE: api/PaymentDetails/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePaymentDetail([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		// PUT: api/PaymentDetails/5
+		[HttpPut( "{id}" )]
+		public async Task<IActionResult> PutPaymentDetail ( [FromRoute] int id, [FromBody] PaymentDetail paymentDetail )
+		{
+			if ( !this.ModelState.IsValid )
+			{
+				return this.BadRequest( this.ModelState );
+			}
 
-            var paymentDetail = await _context.PaymentDetails.FindAsync(id);
-            if (paymentDetail == null)
-            {
-                return NotFound();
-            }
+			if ( id != paymentDetail.PmId )
+			{
+				return this.BadRequest();
+			}
 
-            _context.PaymentDetails.Remove(paymentDetail);
-            await _context.SaveChangesAsync();
+			this._context.Entry( paymentDetail ).State = EntityState.Modified;
 
-            return Ok(paymentDetail);
-        }
+			try
+			{
+				await this._context.SaveChangesAsync();
+			}
+			catch ( DbUpdateConcurrencyException )
+			{
+				if ( !this.PaymentDetailExists( id ) )
+				{
+					return this.NotFound();
+				}
 
-        private bool PaymentDetailExists(int id)
-        {
-            return _context.PaymentDetails.Any(e => e.PmId == id);
-        }
-    }
+				throw;
+			}
+
+			return this.NoContent();
+		}
+
+		// POST: api/PaymentDetails
+		[HttpPost]
+		public async Task<IActionResult> PostPaymentDetail ( [FromBody] PaymentDetail paymentDetail )
+		{
+			if ( !this.ModelState.IsValid )
+			{
+				return this.BadRequest( this.ModelState );
+			}
+
+			this._context.PaymentDetails.Add( paymentDetail );
+			await this._context.SaveChangesAsync();
+
+			return this.CreatedAtAction( "GetPaymentDetail", new { id = paymentDetail.PmId }, paymentDetail );
+		}
+
+		// DELETE: api/PaymentDetails/5
+		[HttpDelete( "{id}" )]
+		public async Task<IActionResult> DeletePaymentDetail ( [FromRoute] int id )
+		{
+			if ( !this.ModelState.IsValid )
+			{
+				return this.BadRequest( this.ModelState );
+			}
+
+			var paymentDetail = await this._context.PaymentDetails.FindAsync( id );
+			if ( paymentDetail == null )
+			{
+				return this.NotFound();
+			}
+
+			this._context.PaymentDetails.Remove( paymentDetail );
+			await this._context.SaveChangesAsync();
+
+			return this.Ok( paymentDetail );
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		private bool PaymentDetailExists ( int id )
+		{
+			return this._context.PaymentDetails.Any( e => e.PmId == id );
+		}
+
+		#endregion
+	}
 }
